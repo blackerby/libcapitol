@@ -1,6 +1,5 @@
 #include "test-framework/unity.h"
 #include "capitol.h"
-#include <string.h>
 
 void setUp(void)
 {
@@ -46,7 +45,7 @@ static void test_tokenize_with_version(void)
 static void test_parse_no_version(void)
 {
 	cite_token_t token = tokenize("118hr8070");
-	citation_t expected = { 118, HOUSE, HOUSE_BILL, 8070, NULL };
+	citation_t expected = { 118, HOUSE, BILL, 8070, NULL };
 	citation_t actual = parse(token);
 
 	check_citation(expected, actual);
@@ -55,7 +54,7 @@ static void test_parse_no_version(void)
 static void test_parse_with_version(void)
 {
 	cite_token_t token = tokenize("118hr8070ih");
-	citation_t expected = { 118, HOUSE, HOUSE_BILL, 8070, "ih" };
+	citation_t expected = { 118, HOUSE, BILL, 8070, "ih" };
 	citation_t actual = parse(token);
 
 	check_citation(expected, actual);

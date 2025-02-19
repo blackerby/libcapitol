@@ -1,7 +1,7 @@
 #ifndef CAPITOL_H
 #define CAPITOL_H
 
-#define FIRST_CONGRESS 1789
+#include <stdbool.h>
 
 typedef enum {
 	HOUSE,
@@ -9,16 +9,11 @@ typedef enum {
 } chamber_t;
 
 typedef enum {
-	HOUSE_BILL,
-	SENATE_BILL,
-	HOUSE_RESOLUTION,
-	SENATE_RESOLUTION,
-	HOUSE_CONCURRENT_RESOLUTION,
-	SENATE_CONCURRENT_RESOLUTION,
-	HOUSE_JOINT_RESOLUTION,
-	SENATE_JOINT_RESOLUTION,
-	HOUSE_REPORT,
-	SENATE_REPORT
+	BILL,
+	RESOLUTION,
+	CONCURRENT_RESOLUTION,
+	JOINT_RESOLUTION,
+	REPORT
 } cong_object_t;
 
 typedef struct {
@@ -39,5 +34,6 @@ typedef struct {
 char *read(char *val, char *input, char start, char end);
 cite_token_t tokenize(char *input);
 citation_t parse(cite_token_t token);
+bool obj_eq(char *obj, char *hcand, char *scand);
 
 #endif

@@ -13,6 +13,12 @@ char *read(char *val, char *input, char start, char end)
 	return input;
 }
 
+bool obj_eq(char *obj, char *hcand, char *scand)
+{
+	return (strcmp(obj, hcand) == 0)
+	       || (strcmp(obj, scand) == 0);
+}
+
 cite_token_t tokenize(char *input)
 {
 
@@ -58,26 +64,16 @@ citation_t parse(cite_token_t token)
 
 	cong_object_t type;
 	char *type_token = token.object_type;
-	if (strcmp(type_token, "hr") == 0)
-		type = HOUSE_BILL;
-	else if (strcmp(type_token, "s") == 0)
-		type = SENATE_BILL;
-	else if (strcmp(type_token, "hres") == 0)
-		type = HOUSE_RESOLUTION;
-	else if (strcmp(type_token, "sres") == 0)
-		type = SENATE_RESOLUTION;
-	else if (strcmp(type_token, "hconres") == 0)
-		type = HOUSE_CONCURRENT_RESOLUTION;
-	else if (strcmp(type_token, "sconres") == 0)
-		type = SENATE_CONCURRENT_RESOLUTION;
-	else if (strcmp(type_token, "hjres") == 0)
-		type = HOUSE_JOINT_RESOLUTION;
-	else if (strcmp(type_token, "sjres") == 0)
-		type = SENATE_JOINT_RESOLUTION;
-	else if (strcmp(type_token, "hrpt") == 0)
-		type = HOUSE_REPORT;
-	else if (strcmp(type_token, "srpt") == 0)
-		type = SENATE_REPORT;
+	if (obj_eq(type_token, "hr", "s"))
+		type = BILL;
+	else if (obj_eq(type_token, "hres", "sres"))
+		type = RESOLUTION;
+	else if (obj_eq(type_token, "hconres", "sconres"))
+		type = CONCURRENT_RESOLUTION;
+	else if (obj_eq(type_token, "hjres", "sjres"))
+		type = JOINT_RESOLUTION;
+	else if (obj_eq(type_token, "hrpt", "srpt"))
+		type = REPORT;
 	// TODO: error
 	
 	citation_t citation;
