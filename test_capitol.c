@@ -18,6 +18,15 @@ static void check_token(cite_token_t expected, cite_token_t actual)
 	TEST_ASSERT_EQUAL_STRING(expected.version, actual.version);
 }
 
+static void check_citation(citation_t expected, citation_t actual)
+{
+	TEST_ASSERT_EQUAL(expected.congress, actual.congress);
+	TEST_ASSERT_EQUAL(expected.chamber, actual.chamber);
+	TEST_ASSERT_EQUAL(expected.object_type, actual.object_type);
+	TEST_ASSERT_EQUAL(expected.number, actual.number);
+	TEST_ASSERT_EQUAL_STRING(expected.version, actual.version);
+}
+
 static void test_tokenize_no_version(void)
 {
 	cite_token_t expected = (cite_token_t) { "118", "hr", "8070", NULL };
@@ -28,10 +37,28 @@ static void test_tokenize_no_version(void)
 
 static void test_tokenize_with_version(void)
 {
-	cite_token_t expected = (cite_token_t) { "118", "hr", "8070", "ih" };
+	cite_token_t expected = { "118", "hr", "8070", "ih" };
 	cite_token_t actual = tokenize("118hr8070ih");
 
 	check_token(expected, actual);
+}
+
+static void test_parse_no_version(void)
+{
+	cite_token_t token = tokenize("118hr8070");
+	citation_t expected = { 118, HOUSE, HOUSE_BILL, 8070, NULL };
+	citation_t actual = parse(token);
+
+	check_citation(expected, actual);
+}
+
+static void test_parse_with_version(void)
+{
+	cite_token_t token = tokenize("118hr8070ih");
+	citation_t expected = { 118, HOUSE, HOUSE_BILL, 8070, "ih" };
+	citation_t actual = parse(token);
+
+	check_citation(expected, actual);
 }
 
 int main(void)
@@ -40,6 +67,8 @@ int main(void)
 
 	RUN_TEST(test_tokenize_no_version);
 	RUN_TEST(test_tokenize_with_version);
+	RUN_TEST(test_parse_no_version);
+	RUN_TEST(test_parse_with_version);
 
 	return UNITY_END();
 }

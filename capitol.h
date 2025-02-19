@@ -15,7 +15,7 @@ typedef enum {
 	SENATE_RESOLUTION,
 	HOUSE_CONCURRENT_RESOLUTION,
 	SENATE_CONCURRENT_RESOLUTION,
-	HOUSE_JOIN_RESOLUTION,
+	HOUSE_JOINT_RESOLUTION,
 	SENATE_JOINT_RESOLUTION,
 	HOUSE_REPORT,
 	SENATE_REPORT
@@ -38,6 +38,6 @@ typedef struct {
 
 char *read(char *val, char *input, char start, char end);
 cite_token_t tokenize(char *input);
-/*citation_t parse(cite_token_t token);*/
+citation_t parse(cite_token_t token);
 
 #endif
