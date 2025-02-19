@@ -39,5 +39,6 @@ citation_t parse(cite_token_t token);
 bool obj_eq(char *obj, char *hcand, char *scand);
 char *url(citation_t citation);
 char *ordinal(int congress);
+char *convert_citation(char *input);
 
 #endif

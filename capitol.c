@@ -141,3 +141,12 @@ char *url(citation_t citation)
 
 	return url;
 }
+
+char *convert_citation(char *input)
+{
+	cite_token_t token = tokenize(input);
+	citation_t citation = parse(token);
+	return url(citation);
+}
+
+

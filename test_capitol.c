@@ -78,6 +78,14 @@ static void test_url_with_version(void)
 	TEST_ASSERT_EQUAL_STRING(expected, actual);
 }
 
+static void test_convert_no_version(void)
+{
+	char *expected = "https://www.congress.gov/bill/118th-congress/house-bill/8070";
+	char *actual = convert_citation("118hr8070");
+
+	TEST_ASSERT_EQUAL_STRING(expected, actual);
+}
+
 int main(void)
 {
 	UNITY_BEGIN();
@@ -88,6 +96,7 @@ int main(void)
 	RUN_TEST(test_parse_with_version);
 	RUN_TEST(test_url_no_version);
 	RUN_TEST(test_url_with_version);
+	RUN_TEST(test_convert_no_version);
 
 	return UNITY_END();
 }
