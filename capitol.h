@@ -3,6 +3,8 @@
 
 #include <stdbool.h>
 
+#define BASE_URL "https://www.congress.gov"
+
 typedef enum {
 	HOUSE,
 	SENATE
@@ -35,5 +37,7 @@ char *read(char *val, char *input, char start, char end);
 cite_token_t tokenize(char *input);
 citation_t parse(cite_token_t token);
 bool obj_eq(char *obj, char *hcand, char *scand);
+char *url(citation_t citation);
+char *ordinal(int congress);
 
 #endif

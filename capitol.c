@@ -1,6 +1,7 @@
 #include "capitol.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 char *read(char *val, char *input, char start, char end)
 {
@@ -17,6 +18,18 @@ bool obj_eq(char *obj, char *hcand, char *scand)
 {
 	return (strcmp(obj, hcand) == 0)
 	       || (strcmp(obj, scand) == 0);
+}
+
+char *ordinal(int congress)
+{
+	int last = congress % 10;
+
+	switch (last) {
+		case 1: return "st";
+		case 2: return "nd";
+		case 3: return "rd";
+		default: return "th";
+	}
 }
 
 cite_token_t tokenize(char *input)
@@ -84,4 +97,47 @@ citation_t parse(cite_token_t token)
 	citation.version = token.version;
 
 	return citation;
+}
+
+char *url(citation_t citation)
+{
+	char *chamber;
+	if (citation.chamber == HOUSE)
+		chamber = "house";
+	else if (citation.chamber == SENATE)
+		chamber = "senate";
+
+	char *collection;
+	char *type;
+	switch (citation.object_type) {
+		case BILL:
+			collection = "bill";
+			type = "bill";
+			break;
+		case RESOLUTION:
+			collection = "bill";
+			type = "resolution";
+			break;
+		case CONCURRENT_RESOLUTION:
+			collection = "bill";
+			type = "concurrent-resolution";
+			break;
+		case JOINT_RESOLUTION:
+			collection = "bill";
+			type = "joint-resolution";
+			break;
+		case REPORT:
+			collection = "congressional-report";
+			type = "report";
+			break;
+	}
+
+	char *url = malloc(sizeof(char) * 256 + 1);
+	sprintf(url, "%s/%s/%d%s-congress/%s-%s/%d", BASE_URL, collection, citation.congress, ordinal(citation.congress), chamber, type, citation.number);
+	if (citation.version) {
+		strcat(url, "/");
+		strcat(url, citation.version);
+	}
+
+	return url;
 }

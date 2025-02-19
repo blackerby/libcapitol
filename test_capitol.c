@@ -60,6 +60,24 @@ static void test_parse_with_version(void)
 	check_citation(expected, actual);
 }
 
+static void test_url_no_version(void)
+{
+	citation_t token = { 118, HOUSE, BILL, 8070, NULL };
+	char *expected = "https://www.congress.gov/bill/118th-congress/house-bill/8070";
+	char *actual = url(token);
+
+	TEST_ASSERT_EQUAL_STRING(expected, actual);
+}
+
+static void test_url_with_version(void)
+{
+	citation_t token = { 118, HOUSE, BILL, 8070, "ih" };
+	char *expected = "https://www.congress.gov/bill/118th-congress/house-bill/8070/ih";
+	char *actual = url(token);
+
+	TEST_ASSERT_EQUAL_STRING(expected, actual);
+}
+
 int main(void)
 {
 	UNITY_BEGIN();
@@ -68,6 +86,8 @@ int main(void)
 	RUN_TEST(test_tokenize_with_version);
 	RUN_TEST(test_parse_no_version);
 	RUN_TEST(test_parse_with_version);
+	RUN_TEST(test_url_no_version);
+	RUN_TEST(test_url_with_version);
 
 	return UNITY_END();
 }
