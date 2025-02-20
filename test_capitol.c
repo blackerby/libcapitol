@@ -1,5 +1,6 @@
 #include "test-framework/unity.h"
 #include "capitol.h"
+#include <stdlib.h>
 
 void setUp(void)
 {
@@ -32,6 +33,9 @@ static void test_tokenize_no_version(void)
 	cite_token_t actual = tokenize("118hr8070");
 
 	check_token(expected, actual);
+	free(actual.congress);
+	free(actual.object_type);
+	free(actual.number);
 }
 
 static void test_tokenize_with_version(void)
@@ -40,6 +44,10 @@ static void test_tokenize_with_version(void)
 	cite_token_t actual = tokenize("118hr8070ih");
 
 	check_token(expected, actual);
+	free(actual.congress);
+	free(actual.object_type);
+	free(actual.number);
+	free(actual.version);
 }
 
 static void test_parse_no_version(void)
@@ -49,6 +57,10 @@ static void test_parse_no_version(void)
 	citation_t actual = parse(token);
 
 	check_citation(expected, actual);
+	free(token.congress);
+	free(token.object_type);
+	free(token.number);
+	free(token.version);
 }
 
 static void test_parse_with_version(void)
@@ -58,6 +70,10 @@ static void test_parse_with_version(void)
 	citation_t actual = parse(token);
 
 	check_citation(expected, actual);
+	free(token.congress);
+	free(token.object_type);
+	free(token.number);
+	free(token.version);
 }
 
 static void test_url_no_version(void)
@@ -67,6 +83,7 @@ static void test_url_no_version(void)
 	char *actual = url(token);
 
 	TEST_ASSERT_EQUAL_STRING(expected, actual);
+	free(actual);
 }
 
 static void test_url_with_version(void)
@@ -76,6 +93,7 @@ static void test_url_with_version(void)
 	char *actual = url(token);
 
 	TEST_ASSERT_EQUAL_STRING(expected, actual);
+	free(actual);
 }
 
 static void test_convert_no_version(void)
@@ -84,6 +102,7 @@ static void test_convert_no_version(void)
 	char *actual = convert_citation("118hr8070");
 
 	TEST_ASSERT_EQUAL_STRING(expected, actual);
+	free(actual);
 }
 
 int main(void)

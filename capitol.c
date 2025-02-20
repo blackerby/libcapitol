@@ -146,6 +146,10 @@ char *convert_citation(char *input)
 {
 	cite_token_t token = tokenize(input);
 	citation_t citation = parse(token);
+	free(token.congress);
+	free(token.object_type);
+	free(token.number);
+	free(token.version);
 	return url(citation);
 }
 
