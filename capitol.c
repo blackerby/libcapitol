@@ -3,17 +3,6 @@
 #include <string.h>
 #include <stdio.h>
 
-char *read(char *val, char *input, char start, char end)
-{
-	char *p = val;
-	while (*input >= start && *input <= end) {
-		*p++ = *input++;
-	}
-	*p = '\0';
-
-	return input;
-}
-
 bool obj_eq(char *obj, char *hcand, char *scand)
 {
 	return (strcmp(obj, hcand) == 0)
@@ -34,25 +23,46 @@ char *ordinal(int congress)
 
 cite_token_t tokenize(char *input)
 {
-
 	char *congress = malloc(sizeof(char) * 3 + 1);
-	input = read(congress, input, '0', '9');
+	char *p = congress;
+	while (*input >= '0' && *input <= '9') {
+		*p++ = *input++;
+	}
+	*p = '\0';
 
 	char *object_type = malloc(sizeof(char) * 7 + 1);
-	input = read(object_type, input, 'a', 'z');
+	p = object_type;
+	while (*input >= 'a' && *input <= 'z') {
+		*p++ = *input++;
+	}
+	*p = '\0';
 
 	char *number = malloc(sizeof(char) * 5 + 1);
-	input = read(number, input, '0', '9');
+	p = number;
+	while (*input >= '0' && *input <= '9') {
+		*p++ = *input++;
+	}
+	*p = '\0';
 
 	cite_token_t token;
-	token.congress = congress;
-	token.object_type = object_type;
-	token.number = number;
+	token.congress = atoi(congress);
+	free(congress);
+	token.object_type = malloc(sizeof(char) * strlen(object_type) + 1);
+	strcpy(token.object_type, object_type);
+	free(object_type);
+	token.number = atoi(number);
+	free(number);
 
 	if (*input) {
 		char *version = malloc(sizeof(char) * 3 + 1);
-		input = read(version, input, 'a', 'z');
-		token.version = version;
+		p = version;
+		while (*input >= 'a' && *input <= 'z') {
+			*p++ = *input++;
+		}
+		*p = '\0';
+		token.version = malloc(sizeof(char) * strlen(version) + 1);
+		strcpy(token.version, version);
+		free(version);
 	} else {
 		token.version = NULL;
 	}
@@ -61,9 +71,6 @@ cite_token_t tokenize(char *input)
 
 citation_t parse(cite_token_t token)
 {
-	int congress = atoi(token.congress);
-	int number = atoi(token.number);
-
 	chamber_t chamber;
 	switch (token.object_type[0]) {
 		case 'h':
@@ -90,16 +97,23 @@ citation_t parse(cite_token_t token)
 	// TODO: error
 	
 	citation_t citation;
-	citation.congress = congress;
+	citation.congress = token.congress;
 	citation.chamber = chamber;
 	citation.object_type = type;
-	citation.number = number;
-	citation.version = token.version;
-
+	citation.number = token.number;
+	if (token.version) {
+		citation.version = malloc(sizeof(char) * strlen(token.version) + 1);
+		strcpy(citation.version, token.version);
+	} else {
+		citation.version = NULL;
+	}
+	
+	free(token.object_type);
+	if (token.version) free(token.version);
 	return citation;
 }
 
-char *url(citation_t citation)
+void url(citation_t citation, char *out)
 {
 	char *chamber;
 	if (citation.chamber == HOUSE)
@@ -132,25 +146,23 @@ char *url(citation_t citation)
 			break;
 	}
 
-	char *url = malloc(sizeof(char) * 256 + 1);
+	char url[256];
 	sprintf(url, "%s/%s/%d%s-congress/%s-%s/%d", BASE_URL, collection, citation.congress, ordinal(citation.congress), chamber, type, citation.number);
 	if (citation.version) {
-		strcat(url, "/");
+		strcat(url, "/text/");
 		strcat(url, citation.version);
 	}
 
-	return url;
+	strcpy(out, url);
+	out[strlen(url)] = '\0';
 }
 
-char *convert_citation(char *input)
+void convert_citation(char *input, char *out)
 {
 	cite_token_t token = tokenize(input);
 	citation_t citation = parse(token);
-	free(token.congress);
-	free(token.object_type);
-	free(token.number);
-	free(token.version);
-	return url(citation);
+	url(citation, out);
+	if (citation.version)
+		free(citation.version);
 }
-
 

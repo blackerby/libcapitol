@@ -19,9 +19,9 @@ typedef enum {
 } cong_object_t;
 
 typedef struct {
-	char *congress;
+	int congress;
 	char *object_type;
-	char *number;
+	int number;
 	char *version;
 } cite_token_t;
 
@@ -37,8 +37,8 @@ char *read(char *val, char *input, char start, char end);
 cite_token_t tokenize(char *input);
 citation_t parse(cite_token_t token);
 bool obj_eq(char *obj, char *hcand, char *scand);
-char *url(citation_t citation);
+void url(citation_t citation, char *out);
 char *ordinal(int congress);
-char *convert_citation(char *input);
+void convert_citation(char *input, char *out);
 
 #endif
